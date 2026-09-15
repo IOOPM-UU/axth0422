@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#define No_Buckets 17
+
 typedef struct entry entry_t;
 struct entry
 {
@@ -17,7 +19,7 @@ struct hash_table
 {
     // DODGE: hard-coding number of buckets as 17.
     // NOTE: addressing this dodge is optional.
-    entry_t *buckets[17];
+    entry_t *buckets[No_Buckets];
 };
 
 static size_t string_knr_hash(const char *str)
@@ -39,7 +41,7 @@ ioopm_hash_table_t *ioopm_hash_table_create(void)
 
 void ioopm_hash_table_destroy(ioopm_hash_table_t *ht)
 {
-    for (int i = 0; i < 17; i++)
+    for (int i = 0; i < No_Buckets; i++)
     {
         entry_t *previous = NULL;
         entry_t *current = ht->buckets[i];
@@ -57,7 +59,7 @@ void ioopm_hash_table_destroy(ioopm_hash_table_t *ht)
 entry_t *find_previous_entry(ioopm_hash_table_t *ht, char *key)
 {
     // find bucket
-    size_t bucket = string_knr_hash(key) % 17;
+    size_t bucket = string_knr_hash(key) % No_Buckets;
 
     // look for an entry with the key we want
     entry_t *previous = NULL;
@@ -88,7 +90,7 @@ void ioopm_hash_table_insert(ioopm_hash_table_t *ht, char *key, int value)
 
     if (previous == NULL)
     {
-        size_t bucket = string_knr_hash(key) % 17;
+        size_t bucket = string_knr_hash(key) % No_Buckets;
 
         ht->buckets[bucket] = entry_create(key, value, NULL);
     }
@@ -105,20 +107,12 @@ void ioopm_hash_table_insert(ioopm_hash_table_t *ht, char *key, int value)
 
 bool ioopm_hash_table_lookup(ioopm_hash_table_t *ht, char *key, int *result)
 {
-
-    // // look for an entry with the key we want
-    // entry_t *current = ht->buckets[bucket];
-    // while (current != NULL && strcmp(current->key, key) != 0)
-    // {
-    //     current = current->next;
-    // }
-
     entry_t *previous = find_previous_entry(ht, key);
     entry_t *current;
 
     if (previous == NULL)
     {
-        size_t bucket = string_knr_hash(key) % 17;
+        size_t bucket = string_knr_hash(key) % No_Buckets;
         current = ht->buckets[bucket];
     }
     else
@@ -143,7 +137,7 @@ int ioopm_hash_table_remove(ioopm_hash_table_t *ht, char *key)
     entry_t *previous = find_previous_entry(ht, key);
     entry_t *current;
 
-    size_t bucket = string_knr_hash(key) % 17;
+    size_t bucket = string_knr_hash(key) % No_Buckets;
 
     if (ht->buckets[bucket] == NULL)
     {
