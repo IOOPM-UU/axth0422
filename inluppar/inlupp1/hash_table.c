@@ -6,8 +6,6 @@
 #include <string.h>
 
 typedef struct entry entry_t;
-
-
 struct entry
 {
     char *key;     // holds the key
@@ -35,30 +33,42 @@ static size_t string_knr_hash(const char *str)
 
 ioopm_hash_table_t *ioopm_hash_table_create(void)
 {
-  /// Allocate zeroed-out space for a ioopm_hash_table_t = 17 pointers to entry_t's
-  return calloc(1, sizeof(ioopm_hash_table_t));
+    /// Allocate zeroed-out space for a ioopm_hash_table_t = 17 pointers to entry_t's
+    return calloc(1, sizeof(ioopm_hash_table_t));
 }
 
 void ioopm_hash_table_destroy(ioopm_hash_table_t *ht)
 {
-  free(ht);
+    for (int i = 0; i < 17; i++)
+    {
+        entry_t *previous = NULL;
+        entry_t *current = ht->buckets[i];
+        while (current != NULL)
+        {
+            previous = current;
+            current = current->next;
+            free(previous);
+        }
+    }
+
+    free(ht);
 }
 
 entry_t *find_previous_entry(ioopm_hash_table_t *ht, char *key)
 {
-  // find bucket
-  size_t bucket = string_knr_hash(key) % 17;
+    // find bucket
+    size_t bucket = string_knr_hash(key) % 17;
 
-  // look for an entry with the key we want
-  entry_t *previous = NULL;
-  entry_t *current = ht->buckets[bucket];
-  while (current != NULL && strcmp(current->key, key) != 0)
-  {
-    previous = current;
-    current = current->next;
-  }
+    // look for an entry with the key we want
+    entry_t *previous = NULL;
+    entry_t *current = ht->buckets[bucket];
+    while (current != NULL && strcmp(current->key, key) != 0)
+    {
+        previous = current;
+        current = current->next;
+    }
 
-  return previous;
+    return previous;
 }
 
 static entry_t *entry_create(char *key, int value, entry_t *next)

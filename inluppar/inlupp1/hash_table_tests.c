@@ -67,6 +67,8 @@ void test_remove_entry(void)
   result = ioopm_hash_table_remove(ht, key);
 
   CU_ASSERT_EQUAL(value, result);
+
+  ioopm_hash_table_destroy(ht);
 }
 
 int main() {
