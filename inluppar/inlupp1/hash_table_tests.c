@@ -71,6 +71,61 @@ void test_remove_entry(void)
   ioopm_hash_table_destroy(ht);
 }
 
+void test_has_key(void)
+{
+  // create new hash table
+  ioopm_hash_table_t *ht = ioopm_hash_table_create();
+
+  char *key = "ioopm";
+  int value = 7734;
+
+  CU_ASSERT_FALSE(ioopm_hash_table_has_key(ht, key));
+
+  ioopm_hash_table_insert(ht, key, value);
+
+  CU_ASSERT_TRUE(ioopm_hash_table_has_key(ht, key));
+
+  ioopm_hash_table_destroy(ht);
+}
+
+void test_is_empty(void)
+{
+  // create new hash table
+  ioopm_hash_table_t *ht = ioopm_hash_table_create();
+
+  char *key = "dark";
+  int value = 256;
+
+  CU_ASSERT_TRUE(ioopm_hash_table_is_empty(ht));
+
+  ioopm_hash_table_insert(ht, key, value);
+
+  CU_ASSERT_FALSE(ioopm_hash_table_is_empty(ht));
+
+  ioopm_hash_table_destroy(ht);
+}
+
+void test_size(void)
+{
+  // create new hash table
+  ioopm_hash_table_t *ht = ioopm_hash_table_create();
+
+  char *key = "automata";
+  int value = 41;
+
+  CU_ASSERT_EQUAL(ioopm_hash_table_size(ht), 0);
+
+  ioopm_hash_table_insert(ht, key, value);
+
+  CU_ASSERT_EQUAL(ioopm_hash_table_size(ht), 1);
+
+  ioopm_hash_table_remove(ht, key);
+
+  CU_ASSERT_EQUAL(ioopm_hash_table_size(ht), 0);
+
+  ioopm_hash_table_destroy(ht);
+}
+
 int main() {
   // First we try to set up CUnit, and exit if we fail
   if (CU_initialize_registry() != CUE_SUCCESS)
@@ -94,6 +149,9 @@ int main() {
     (CU_add_test(my_test_suite, "Create & Destroy Test", test_create_destroy) == NULL) ||
     (CU_add_test(my_test_suite, "Insert Once Test", test_insert_once) == NULL) ||
     (CU_add_test(my_test_suite, "Remove Entry Test", test_remove_entry) == NULL) ||
+    (CU_add_test(my_test_suite, "Has Key Test", test_has_key) == NULL) ||
+    (CU_add_test(my_test_suite, "Is Empty Test", test_is_empty) == NULL) ||
+    (CU_add_test(my_test_suite, "Size Test", test_size) == NULL) ||
     0
   )
     {

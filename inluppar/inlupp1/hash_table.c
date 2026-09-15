@@ -20,6 +20,7 @@ struct hash_table
     // DODGE: hard-coding number of buckets as 17.
     // NOTE: addressing this dodge is optional.
     entry_t *buckets[No_Buckets];
+    int size;
 };
 
 static size_t string_knr_hash(const char *str)
@@ -36,7 +37,9 @@ static size_t string_knr_hash(const char *str)
 ioopm_hash_table_t *ioopm_hash_table_create(void)
 {
     /// Allocate zeroed-out space for a ioopm_hash_table_t = 17 pointers to entry_t's
-    return calloc(1, sizeof(ioopm_hash_table_t));
+    ioopm_hash_table_t *ht = calloc(1, sizeof(ioopm_hash_table_t));
+    ht->size = 0;
+    return ht;
 }
 
 void ioopm_hash_table_destroy(ioopm_hash_table_t *ht)
@@ -93,6 +96,8 @@ void ioopm_hash_table_insert(ioopm_hash_table_t *ht, char *key, int value)
         size_t bucket = string_knr_hash(key) % No_Buckets;
 
         ht->buckets[bucket] = entry_create(key, value, NULL);
+
+        ht->size += 1;
     }
     // if the key exists, update the value, otherwise create a new entry
     else if (previous->next != NULL)
@@ -102,6 +107,8 @@ void ioopm_hash_table_insert(ioopm_hash_table_t *ht, char *key, int value)
     else
     {
         previous->next = entry_create(key, value, NULL);
+
+        ht->size += 1;
     }
 }
 
@@ -159,5 +166,39 @@ int ioopm_hash_table_remove(ioopm_hash_table_t *ht, char *key)
 
     free(current);
 
+    ht->size -= 1;
+
     return result;
+}
+
+// TODO: documentation
+bool ioopm_hash_table_has_key(ioopm_hash_table_t *ht, char *key)
+{
+    size_t bucket = string_knr_hash(key) % No_Buckets;
+
+    entry_t *current = ht->buckets[bucket];
+
+    while (current != NULL)
+    {
+        if (strcmp(current->key, key) == 0)
+        {
+            return true;
+        }
+
+        current = current->next;
+    }
+
+    return false;
+}
+
+// TODO: documentation
+bool ioopm_hash_table_is_empty(ioopm_hash_table_t *ht)
+{
+    return ht->size == 0;
+}
+
+// TODO: documentation
+int ioopm_hash_table_size(ioopm_hash_table_t *ht)
+{
+    return ht->size;
 }
