@@ -47,7 +47,7 @@ void ioopm_hash_table_destroy(ioopm_hash_table_t *ht)
     for (int i = 0; i < No_Buckets; i++)
     {
         entry_t *previous = NULL;
-        entry_t *current = ht->buckets[i];
+        entry_t *current = ht->buckets[i]; // The same as *(ht->buckets + i)
         while (current != NULL)
         {
             previous = current;
@@ -120,7 +120,7 @@ bool ioopm_hash_table_lookup(ioopm_hash_table_t *ht, char *key, int *result)
     if (previous == NULL)
     {
         size_t bucket = string_knr_hash(key) % No_Buckets;
-        current = ht->buckets[bucket];
+        current = ht->buckets[bucket]; // The same as *(ht->buckets + bucket)
     }
     else
     {
