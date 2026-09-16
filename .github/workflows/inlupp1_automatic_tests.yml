@@ -16,12 +16,9 @@ jobs:
 
       - name: Install dependencies
         run: sudo apt-get install -y gcc libcunit1 libcunit1-doc libcunit1-dev valgrind
-
-      - name: Change Dir
-        run: cd ./inluppar/inlupp1
         
       - name: Compile Source Code
-        run: gcc -Wall -Wextra -pedantic -g hash_table.c hash_table_tests.c -o test.out -lcunit
+        run: gcc -Wall -Wextra -pedantic -g ./inluppar/inlupp1/hash_table.c ./inluppar/inlupp1/hash_table_tests.c -o ./inluppar/inlupp1/test.out -lcunit
 
       - name: Run Tests
-        run: valgrind --leak-check=full -s ./test.out
+        run: valgrind --leak-check=full -s ./inluppar/inlupp1/test.out
