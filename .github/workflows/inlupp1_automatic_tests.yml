@@ -2,6 +2,7 @@
 
 on:
   pull_request:
+  workflow_dispatch:
 
 jobs:
   automatic_tests:
@@ -9,6 +10,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
+
+      - name: Update apt-get
+        run: sudo apt-get update -y
 
       - name: Install dependencies
         run: sudo apt-get install -y gcc libcunit1 libcunit1-doc libcunit1-dev valgrind
