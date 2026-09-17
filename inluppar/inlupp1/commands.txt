@@ -1,0 +1,2 @@
+gcc -O0 --coverage -c hash_table.c hash_table_tests.c && gcc -O0 --coverage hash_table.o hash_table_tests.o -lcunit -o run_tests.out && ./run_tests.out && gcov -H -j hash_table.c && unar -f hash_table.gcov.json.gz
+gcc -Wall -Wextra -pedantic -g hash_table.c hash_table_tests.c -o test.out -lcunit && valgrind --leak-check=full ./test.out
