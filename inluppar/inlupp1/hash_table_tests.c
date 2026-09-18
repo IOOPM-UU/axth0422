@@ -1,5 +1,6 @@
 #include <CUnit/Basic.h>
 #include "hash_table.h"
+#include "hash_table_iterator.h"
 #include <stdio.h>
 
 int init_suite(void) {
@@ -126,6 +127,31 @@ void test_size(void)
   ioopm_hash_table_destroy(ht);
 }
 
+void test_iterator_several_entries()
+{
+  char *keys[3] = {"abc", "qwe", "asd"};
+  int values[3] = {0, 1, 2};
+
+  ioopm_hash_table_t *ht = ioopm_hash_table_create();
+  for (int i = 0; i != 3; ++i)
+  {
+    ioopm_hash_table_insert(ht, keys[i], values[i]);
+  }
+
+  int iteration_count = 0;
+
+  ioopm_hash_table_iterator_t *it = ioopm_hash_table_iterator_create(ht);
+  while (!ioopm_hash_table_iterator_at_end(it))
+  {
+    iteration_count++;
+    ioopm_hash_table_iterator_advance(it);
+  }
+
+  ioopm_hash_table_iterator_destroy(it);
+  ioopm_hash_table_destroy(ht);
+  CU_ASSERT_EQUAL(iteration_count, 3);
+}
+
 int main() {
   // First we try to set up CUnit, and exit if we fail
   if (CU_initialize_registry() != CUE_SUCCESS)
@@ -152,6 +178,7 @@ int main() {
     (CU_add_test(my_test_suite, "Has Key Test", test_has_key) == NULL) ||
     (CU_add_test(my_test_suite, "Is Empty Test", test_is_empty) == NULL) ||
     (CU_add_test(my_test_suite, "Size Test", test_size) == NULL) ||
+    (CU_add_test(my_test_suite, "Iterator Test", test_iterator_several_entries) == NULL) ||
     0
   )
     {

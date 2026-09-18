@@ -1,4 +1,5 @@
 #include "hash_table.h"
+#include "hash_table_iterator.h"
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdlib.h>
@@ -22,6 +23,15 @@ struct hash_table
     entry_t *buckets[No_Buckets];
     int size;
 };
+
+struct hash_table_iterator
+{
+    ioopm_hash_table_t *ht;
+    int current_bucket;
+    entry_t *current_entry;
+};
+
+// ---- Hash Table ---- //
 
 static size_t string_knr_hash(const char *str)
 {
@@ -201,4 +211,74 @@ bool ioopm_hash_table_is_empty(ioopm_hash_table_t *ht)
 int ioopm_hash_table_size(ioopm_hash_table_t *ht)
 {
     return ht->size;
+}
+
+// ---- Iterator ---- //
+
+ioopm_hash_table_iterator_t *ioopm_hash_table_iterator_create(ioopm_hash_table_t *ht)
+{
+    ioopm_hash_table_iterator_t *it = calloc(1, sizeof(ioopm_hash_table_iterator_t));
+    it->ht = ht;
+
+    if (ioopm_hash_table_is_empty(ht))
+    {
+        it->current_bucket = No_Buckets;
+        it->current_entry = ht->buckets[0];
+        return it;
+    }
+
+    it->current_bucket = 0;
+
+    for (int i = 0; i < No_Buckets && ht->buckets[i] == NULL; i++)
+    {
+        it->current_bucket = i + 1;
+    }
+
+    it->current_entry = ht->buckets[it->current_bucket];
+
+    return it;
+}
+
+void ioopm_hash_table_iterator_destroy(ioopm_hash_table_iterator_t *it)
+{
+    free(it);
+}
+
+bool ioopm_hash_table_iterator_at_end(ioopm_hash_table_iterator_t *it)
+{
+    return it->current_bucket == No_Buckets;
+}
+
+void ioopm_hash_table_iterator_advance(ioopm_hash_table_iterator_t *it)
+{
+
+    // advance to the next entry in the bucket
+    it->current_entry = it->current_entry->next;
+
+    if (it->current_entry != NULL)
+    {
+        return;
+    }
+
+    // if it was null advance to the next bucket
+    do
+    {
+        it->current_bucket += 1;
+    } while (it->ht->buckets[it->current_bucket] == NULL && it->current_bucket < No_Buckets);
+
+    // if the next bucket existed, update the current entry
+    if (it->current_bucket != No_Buckets)
+    {
+        it->current_entry = it->ht->buckets[it->current_bucket];
+    }
+}
+
+char *ioopm_hash_table_iterator_current_key(ioopm_hash_table_iterator_t *it)
+{
+    return strdup(it->current_entry->key);
+}
+
+int ioopm_hash_table_iterator_current_value(ioopm_hash_table_iterator_t *it)
+{
+    return it->current_entry->value;
 }
