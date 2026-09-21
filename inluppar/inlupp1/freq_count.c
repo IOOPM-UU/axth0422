@@ -13,10 +13,10 @@
 void process_word(char *word, ioopm_hash_table_t *ht)
 {
     int result = 0;
-    // FIXME: Rewrite to match your own interface, error-handling, etc.
-    int freq = ioopm_hash_table_lookup(ht, word, &result) ? result : 0;
 
-    ioopm_hash_table_insert(ht, strdup(word), freq + 1);
+    ioopm_hash_table_lookup(ht, word, &result);
+
+    ioopm_hash_table_insert(ht, word, result + 1);
 }
 
 /// @brief Process a single file, updating the frequencies of its words
@@ -30,19 +30,22 @@ void process_file(char *filename, ioopm_hash_table_t *ht)
         char *buf = NULL;
         size_t len = 0;
         getline(&buf, &len, f);
-        if (feof(f))
-        {
-            free(buf);
-            break;
-        }
+
         for (char *word = strtok(buf, Delimiters);
-            word && *word;
-            word = strtok(NULL, Delimiters))
+             word && *word;
+             word = strtok(NULL, Delimiters))
         {
             process_word(word, ht);
         }
+
         free(buf);
+
+        if (feof(f))
+        {
+            break;
+        }
     }
+
     fclose(f);
 }
 
@@ -99,8 +102,6 @@ int main(int argc, char *argv[])
     ioopm_hash_table_iterator_t *it;
     int i = 0;
 
-    printf("Size: %d\n", size);
-
     for (
         it = ioopm_hash_table_iterator_create(ht);
         !ioopm_hash_table_iterator_at_end(it);
@@ -111,8 +112,6 @@ int main(int argc, char *argv[])
             .word = ioopm_hash_table_iterator_current_key(it),
             .freq = ioopm_hash_table_iterator_current_value(it)
         };
-
-        printf("Key: %s, Value: %d, Iteration: %d\n", word.word, word.freq, i);
 
         freq_words[i] = word;
 
@@ -126,7 +125,9 @@ int main(int argc, char *argv[])
     sort_freq_words(freq_words, size);
     for (int i = 0; i < size; ++i)
     {
-        // printf("%s: %d\n", freq_words[i].word, freq_words[i].freq);
+        printf("%s: %d\n", freq_words[i].word, freq_words[i].freq);
+
+        free(freq_words[i].word);
     }
     // FIXME: Leaks memory! Use valgrind to find out where that memory is
     // being allocated, and then insert code here to free it.

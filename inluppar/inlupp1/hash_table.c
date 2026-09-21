@@ -38,7 +38,7 @@ static size_t string_knr_hash(const char *str)
     size_t result = 0;
     while (*str != '\0')
     {
-        result = result * 31 + ((unsigned char) *str);
+        result = result * 31 + ((unsigned char)*str);
         str++;
     }
     return result;
@@ -62,11 +62,28 @@ void ioopm_hash_table_destroy(ioopm_hash_table_t *ht)
         {
             previous = current;
             current = current->next;
+            free(previous->key);
             free(previous);
         }
     }
 
     free(ht);
+}
+
+entry_t *find_current_entry(ioopm_hash_table_t *ht, char *key)
+{
+    // find bucket
+    size_t bucket = string_knr_hash(key) % No_Buckets;
+
+    // look for an entry with the key we want
+    entry_t *current = ht->buckets[bucket];
+
+    while (current != NULL && strcmp(current->key, key) != 0)
+    {
+        current = current->next;
+    }
+
+    return current;
 }
 
 entry_t *find_previous_entry(ioopm_hash_table_t *ht, char *key)
@@ -99,26 +116,19 @@ void ioopm_hash_table_insert(ioopm_hash_table_t *ht, char *key, int value)
 {
 
     // find previous entry, or the last entry if the key does not exist
-    entry_t *previous = find_previous_entry(ht, key);
+    entry_t *current = find_current_entry(ht, key);
 
-    if (previous == NULL)
+    if (current == NULL)
     {
         size_t bucket = string_knr_hash(key) % No_Buckets;
 
-        ht->buckets[bucket] = entry_create(key, value, NULL);
+        ht->buckets[bucket] = entry_create(strdup(key), value, ht->buckets[bucket]);
 
         ht->size += 1;
-    }
-    // if the key exists, update the value, otherwise create a new entry
-    else if (previous->next != NULL)
-    {
-        previous->next->value = value;
     }
     else
     {
-        previous->next = entry_create(key, value, NULL);
-
-        ht->size += 1;
+        current->value = value;
     }
 }
 
@@ -174,6 +184,7 @@ int ioopm_hash_table_remove(ioopm_hash_table_t *ht, char *key)
 
     int result = current->value;
 
+    free(current->key);
     free(current);
 
     ht->size -= 1;
