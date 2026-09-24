@@ -2,6 +2,7 @@
 #include "hash_table.h"
 #include "hash_table_iterator.h"
 #include "linked_list.h"
+#include "list_iterator.h"
 #include <stdio.h>
 
 int init_suite(void)
@@ -278,6 +279,30 @@ void test_ll_is_empty(void)
   ioopm_list_destroy(list);
 }
 
+void test_ll_iterator_several_entries()
+{
+  int values[3] = {99, 200, 3754};
+
+  ioopm_list_t *ll = ioopm_list_create();
+  for (int i = 0; i < 3; i++)
+  {
+    ioopm_list_append(ll, values[i]);
+  }
+
+  int iteration_count = 0;
+
+  ioopm_list_iterator_t *it = ioopm_list_iterator_create(ll);
+  while (!ioopm_list_iterator_at_end(it))
+  {
+    iteration_count++;
+    ioopm_list_iterator_advance(it);
+  }
+
+  ioopm_list_iterator_destroy(it);
+  ioopm_list_destroy(ll);
+  CU_ASSERT_EQUAL(iteration_count, 3);
+}
+
 int main()
 {
   CU_initialize_registry();
@@ -303,6 +328,7 @@ int main()
   CU_add_test(suite_ll, "Linked List: Insert & Get Test", test_ll_insert_get);
   CU_add_test(suite_ll, "Linked List: Remove Test", test_ll_remove);
   CU_add_test(suite_ll, "Linked List: Is Empty Test", test_ll_is_empty);
+  CU_add_test(suite_ll, "Linked List: Iterator Test", test_ll_iterator_several_entries);
 
   CU_basic_set_mode(CU_BRM_VERBOSE);
 

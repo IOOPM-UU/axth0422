@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include "linked_list.h"
+#include "list_iterator.h"
 
 typedef struct entry entry_t;
 
@@ -275,4 +276,99 @@ bool ioopm_list_is_empty(ioopm_list_t *list)
     assert(list != NULL);
 
     return ioopm_list_size(list) == 0;
+}
+
+struct list_iterator
+{
+    entry_t *current;
+};
+
+/// @brief Create a new iterator
+/// @param l the list to iterate over
+ioopm_list_iterator_t *ioopm_list_iterator_create(ioopm_list_t *l)
+{
+    assert(l != NULL);
+
+    ioopm_list_iterator_t *it = calloc(1, sizeof(ioopm_list_iterator_t));
+    it->current = l->vanguard->next;
+
+    return it;
+}
+
+/// @brief Destroy the iterator and return its resources
+/// @param iter the iterator
+void ioopm_list_iterator_destroy(ioopm_list_iterator_t *iter)
+{
+    assert(iter != NULL);
+
+    free(iter);
+}
+
+/// @brief Checks if there are more elements to iterate over
+/// @param iter the iterator
+/// @return true if there is at least one more element
+bool ioopm_list_iterator_at_end(ioopm_list_iterator_t *iter)
+{
+    assert(iter != NULL);
+
+    return iter->current->next == NULL;
+}
+
+/// @brief Step the iterator forward one step
+/// @param iter the iterator
+void ioopm_list_iterator_advance(ioopm_list_iterator_t *iter)
+{
+    assert(iter != NULL);
+
+    iter->current = iter->current->next;
+}
+
+/// @brief Return the current element from the underlying list
+/// @param iter the iterator
+/// @return the current element
+int ioopm_list_iterator_current(ioopm_list_iterator_t *iter)
+{
+    assert(iter != NULL);
+
+    return iter->current->value;
+}
+
+/// NOTE: REMOVE IS OPTIONAL TO IMPLEMENT
+/// @brief Remove the current element from the underlying list
+/// @param iter the iterator
+/// @return the removed element
+int ioopm_list_iterator_remove(ioopm_list_iterator_t *iter)
+{
+    assert(iter != NULL);
+
+    entry_t *current = iter->current;
+
+    current->prev->next = current->next;
+    current->next->prev = current->prev;
+
+    int value = ioopm_list_iterator_current(iter);
+
+    ioopm_list_iterator_advance(iter);
+
+    free(current);
+
+    return value;
+}
+
+/// NOTE: INSERT IS OPTIONAL TO IMPLEMENT
+/// @brief Insert a new element into the underlying list making the current element it's next
+/// @param iter the iterator
+/// @param element the element to be inserted
+void ioopm_list_iterator_insert(ioopm_list_iterator_t *iter, int element)
+{
+    assert(iter != NULL);
+
+    entry_t *current = iter->current;
+
+    entry_t *entry = entry_create(element, current->prev, current);
+
+    current->prev->next = entry;
+    current->prev = entry;
+
+    iter->current = iter->current->prev;
 }
