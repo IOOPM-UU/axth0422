@@ -3,3 +3,7 @@ gcc -Wall -Wextra -pedantic --coverage hash_table.c linked_list.c tests.c -g -lc
 
 // ---- GDB ---- //
 gcc -Wall -Wextra -pedantic hash_table.c linked_list.c tests.c -g -lcunit -o tests.out && gdb ./tests.out
+
+
+// -- freq_counter -- //
+gcc -Wall -Wextra -pedantic hash_table.c freq_count.c -g -o freq.out && valgrind --leak-check=full ./freq.out commands.txt

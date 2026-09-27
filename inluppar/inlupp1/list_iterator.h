@@ -1,6 +1,7 @@
 #pragma once
 #include <stdbool.h>
 #include "linked_list.h"
+#include "common.h"
 
 typedef struct list_iterator ioopm_list_iterator_t;
 
@@ -24,16 +25,16 @@ void ioopm_list_iterator_advance(ioopm_list_iterator_t *iter);
 /// @brief Return the current element from the underlying list
 /// @param iter the iterator
 /// @return the current element
-int ioopm_list_iterator_current(ioopm_list_iterator_t *iter);
+elem_t ioopm_list_iterator_current(ioopm_list_iterator_t *iter);
 
 /// NOTE: REMOVE IS OPTIONAL TO IMPLEMENT
 /// @brief Remove the current element from the underlying list
 /// @param iter the iterator
 /// @return the removed element
-int ioopm_list_iterator_remove(ioopm_list_iterator_t *iter);
+elem_t ioopm_list_iterator_remove(ioopm_list_iterator_t *iter);
 
 /// NOTE: INSERT IS OPTIONAL TO IMPLEMENT
 /// @brief Insert a new element into the underlying list making the current element it's next
 /// @param iter the iterator
 /// @param element the element to be inserted
-void ioopm_list_iterator_insert(ioopm_list_iterator_t *iter, int element);
+void ioopm_list_iterator_insert(ioopm_list_iterator_t *iter, elem_t element);
