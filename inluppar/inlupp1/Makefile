@@ -1,5 +1,5 @@
 BUILD ?= debug
-BASE_FLAGS=-Wall -Wextra -pedantic
+BASE_FLAGS=-Wall -Wextra -pedantic --coverage
 
 ifeq ($(BUILD), release)
     FLAGS=$(BASE_FLAGS) -O3 -DNDEBUG
@@ -9,7 +9,7 @@ endif
 
 CC=gcc
 OBJECTS=hash_table.o linked_list.o
-COV_FLAGS = $(FLAGS) --coverage
+GCDA_OBJECTS=hash_table.gcda linked_list.gcda
 
 all:
 	@echo "Not implemented"
@@ -17,14 +17,16 @@ all:
 %.o: %.c
 	$(CC) $(FLAGS) -c $< -o $@
 
-%: $(OBJECTS) %.c
+%.test.out: $(OBJECTS) %.o
+	$(CC) $(FLAGS) $^ -lcunit -o $@
+
+%.out: $(OBJECTS) %.o
 	$(CC) $(FLAGS) $^ -o $@
 
-%_tests: $(OBJECTS) %_tests.c
-	$(CC) $(COV_FLAGS) $^ -lcunit -o $@	
-
-test:
-	@echo "Not implemented"
+test: tests.test.out
+	valgrind --leak-check=full ./tests.test.out
+	gcov $(GCDA_OBJECTS)
+	gcovr
 
 clean:
 	@echo "Not implemented"
