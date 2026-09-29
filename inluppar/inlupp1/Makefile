@@ -12,7 +12,9 @@ OBJECTS=hash_table.o linked_list.o
 GCDA_OBJECTS=hash_table.gcda linked_list.gcda
 
 all:
-	@echo "Not implemented"
+	make tests.test.out
+	make freq_count.out
+	rm -f *.gcda *.gcno *.o *.gcov
 
 %.o: %.c
 	$(CC) $(FLAGS) -c $< -o $@
@@ -29,6 +31,6 @@ test: tests.test.out
 	gcovr
 
 clean:
-	@echo "Not implemented"
+	rm -f *.gcda *.gcno *.out *.o *.gcov
 
-.PHONY: test
+.PHONY: all test clean
