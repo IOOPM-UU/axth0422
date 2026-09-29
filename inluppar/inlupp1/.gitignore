@@ -1,4 +1,11 @@
+*
+!/**/
+!*.*
+!Makefile
+
 *.gcda
 *.gcno
 *.json
 *.gz
+*.out
+*.o
