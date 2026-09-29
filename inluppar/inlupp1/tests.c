@@ -21,6 +21,9 @@ int clean_suite(void)
   return 0;
 }
 
+// ---- Helper Functions ---- //
+
+/// @brief Creates a hash from a string
 size_t string_knr_hash(elem_t str)
 {
   size_t result = 0;
@@ -32,10 +35,25 @@ size_t string_knr_hash(elem_t str)
   return result;
 }
 
+/// @brief Compares two strings
 bool string_compare(elem_t str1, elem_t str2)
 {
   return strcmp(str1.s, str2.s) == 0;
 }
+
+/// @brief Hashes a linked list
+size_t ll_hash(elem_t ll)
+{
+  return (size_t)ll.p;
+}
+
+/// @brief Checks that two linked lists are the same
+bool ll_compare(elem_t ll1, elem_t ll2)
+{
+  return ll1.p == ll2.p;
+}
+
+// ---- Tests ---- //
 
 void test_create_destroy(void)
 {
@@ -319,16 +337,6 @@ void test_ll_iterator_several_entries()
   ioopm_list_iterator_destroy(it);
   ioopm_list_destroy(ll);
   CU_ASSERT_EQUAL(iteration_count, 3);
-}
-
-size_t ll_hash(elem_t ll)
-{
-  return (size_t) ll.p;
-}
-
-bool ll_compare(elem_t ll1, elem_t ll2)
-{
-  return ll1.p == ll2.p;
 }
 
 void test_union(void)
