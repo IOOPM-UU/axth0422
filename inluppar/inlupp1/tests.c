@@ -321,6 +321,49 @@ void test_ll_iterator_several_entries()
   CU_ASSERT_EQUAL(iteration_count, 3);
 }
 
+size_t ll_hash(elem_t ll)
+{
+  return (size_t) ll.p;
+}
+
+bool ll_compare(elem_t ll1, elem_t ll2)
+{
+  return ll1.p == ll2.p;
+}
+
+void test_union(void)
+{
+  ioopm_hash_table_t *ht = ioopm_hash_table_create(ll_hash, ll_compare);
+
+  ioopm_list_t *list1 = ioopm_list_create();
+
+  ioopm_list_insert(list1, 0, int_elem(111));
+  ioopm_list_insert(list1, 1, int_elem(222));
+  ioopm_list_insert(list1, 2, int_elem(333));
+
+  ioopm_hash_table_insert(ht, ptr_elem(list1), ptr_elem(list1));
+  
+  ioopm_list_t *list2 = ioopm_list_create();
+  
+  ioopm_list_insert(list2, 0, int_elem(444));
+  ioopm_list_insert(list2, 1, int_elem(555));
+  ioopm_list_insert(list2, 2, int_elem(666));
+  ioopm_list_insert(list2, 3, int_elem(777));
+
+
+  ioopm_hash_table_insert(ht, ptr_elem(list2), ptr_elem(list2));
+
+  ioopm_hash_table_insert(ht, ptr_elem(list1), ptr_elem(list2));
+
+  CU_ASSERT_EQUAL(ioopm_hash_table_size(ht), 2);
+
+  ioopm_list_destroy(list1);
+  
+  ioopm_list_destroy(list2);
+
+  ioopm_hash_table_destroy(ht);
+}
+
 int main()
 {
   CU_initialize_registry();
@@ -347,6 +390,11 @@ int main()
   CU_add_test(suite_ll, "Linked List: Remove Test", test_ll_remove);
   CU_add_test(suite_ll, "Linked List: Is Empty Test", test_ll_is_empty);
   CU_add_test(suite_ll, "Linked List: Iterator Test", test_ll_iterator_several_entries);
+
+  // Union Tests
+  CU_pSuite suite_union = CU_add_suite("Union Test Suite", init_suite, clean_suite);
+
+  CU_add_test(suite_union, "Union Test", test_union);
 
   CU_basic_set_mode(CU_BRM_VERBOSE);
 
