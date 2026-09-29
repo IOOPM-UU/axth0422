@@ -11,6 +11,9 @@
 #define No_Buckets 17
 
 typedef struct entry entry_t;
+
+// ---- Structs ---- //
+
 struct entry
 {
     elem_t key;    // holds the key
@@ -20,8 +23,6 @@ struct entry
 
 struct hash_table
 {
-    // DODGE: hard-coding number of buckets as 17.
-    // NOTE: addressing this dodge is optional.
     entry_t *buckets[No_Buckets];
     ioopm_hash_function *hash_fn;
     ioopm_eq_function *key_eq_fn;
@@ -39,7 +40,6 @@ struct hash_table_iterator
 
 ioopm_hash_table_t *ioopm_hash_table_create(ioopm_hash_function *hash_fn, ioopm_eq_function *key_eq_fn)
 {
-    /// Allocate zeroed-out space for a ioopm_hash_table_t = 17 pointers to entry_t's
     ioopm_hash_table_t *ht = calloc(1, sizeof(ioopm_hash_table_t));
     ht->size = 0;
     ht->hash_fn = hash_fn;
@@ -54,7 +54,7 @@ void ioopm_hash_table_destroy(ioopm_hash_table_t *ht)
     for (int i = 0; i < No_Buckets; i++)
     {
         entry_t *previous = NULL;
-        entry_t *current = ht->buckets[i]; // The same as *(ht->buckets + i)
+        entry_t *current = ht->buckets[i];
         while (current != NULL)
         {
             previous = current;
@@ -66,6 +66,7 @@ void ioopm_hash_table_destroy(ioopm_hash_table_t *ht)
     free(ht);
 }
 
+/// @brief Returns a pointer to the previous element or null if the element does not exist
 entry_t **find_previous_entry(ioopm_hash_table_t *ht, elem_t key)
 {
     int bucket = ht->hash_fn(key) % No_Buckets;
@@ -80,6 +81,7 @@ entry_t **find_previous_entry(ioopm_hash_table_t *ht, elem_t key)
     return prev;
 }
 
+/// @brief Allocates and returns a new hash table entry
 static entry_t *entry_create(elem_t key, elem_t value, entry_t *next)
 {
     entry_t *entry = calloc(1, sizeof(entry_t));
@@ -93,7 +95,6 @@ void ioopm_hash_table_insert(ioopm_hash_table_t *ht, elem_t key, elem_t value)
 {
     assert(ht != NULL);
 
-    // find previous entry, or the last entry if the key does not exist
     entry_t *current = *find_previous_entry(ht, key);
 
     if (current == NULL)
@@ -116,7 +117,6 @@ bool ioopm_hash_table_lookup(ioopm_hash_table_t *ht, elem_t key, elem_t *result)
 
     entry_t *current = *find_previous_entry(ht, key);
 
-    // if the key exists, return the value, otherwise, indicate that the lookup failed
     if (current != NULL)
     {
         *result = current->value;
@@ -138,7 +138,7 @@ elem_t ioopm_hash_table_remove(ioopm_hash_table_t *ht, elem_t key)
     {
         return int_elem(-1);
     }
-    
+
     entry_t *current = (*prev);
 
     (*prev) = current->next;
@@ -152,7 +152,6 @@ elem_t ioopm_hash_table_remove(ioopm_hash_table_t *ht, elem_t key)
     return result;
 }
 
-// TODO: documentation
 bool ioopm_hash_table_has_key(ioopm_hash_table_t *ht, elem_t key)
 {
     assert(ht != NULL);
@@ -174,7 +173,6 @@ bool ioopm_hash_table_has_key(ioopm_hash_table_t *ht, elem_t key)
     return false;
 }
 
-// TODO: documentation
 bool ioopm_hash_table_is_empty(ioopm_hash_table_t *ht)
 {
     assert(ht != NULL);
@@ -182,7 +180,6 @@ bool ioopm_hash_table_is_empty(ioopm_hash_table_t *ht)
     return ht->size == 0;
 }
 
-// TODO: documentation
 int ioopm_hash_table_size(ioopm_hash_table_t *ht)
 {
     assert(ht != NULL);
@@ -244,13 +241,11 @@ void ioopm_hash_table_iterator_advance(ioopm_hash_table_iterator_t *it)
         return;
     }
 
-    // if it was null advance to the next bucket
     do
     {
         it->current_bucket += 1;
     } while (it->ht->buckets[it->current_bucket] == NULL && it->current_bucket < No_Buckets);
 
-    // if the next bucket existed, update the current entry
     if (it->current_bucket != No_Buckets)
     {
         it->current_entry = it->ht->buckets[it->current_bucket];

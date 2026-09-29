@@ -16,7 +16,6 @@ void process_word(char *word, ioopm_hash_table_t *ht)
 
     ioopm_hash_table_lookup(ht, string_elem(word), &result);
 
-
     if (result.i == 0)
     {
         ioopm_hash_table_insert(ht, string_elem(strdup(word)), int_elem(1));
@@ -92,6 +91,7 @@ void sort_freq_words(struct freq_word words[], int no_words)
     qsort(words, no_words, sizeof(struct freq_word), cmp_freq_words_reverse);
 }
 
+/// @brief Creates a hash from a string
 size_t string_knr_hash(elem_t str)
 {
     size_t result = 0;
@@ -103,6 +103,7 @@ size_t string_knr_hash(elem_t str)
     return result;
 }
 
+/// @brief Compares two strings
 bool string_compare(elem_t str1, elem_t str2)
 {
     return strcmp(str1.s, str2.s) == 0;
@@ -143,17 +144,14 @@ int main(int argc, char *argv[])
 
     ioopm_hash_table_iterator_destroy(it);
 
-    // FIXME: Iterate over hash table to dump its words and
-    // frequencies into the array above
     sort_freq_words(freq_words, size);
+
     for (int i = 0; i < size; ++i)
     {
         printf("%s: %d\n", freq_words[i].word, freq_words[i].freq);
 
         free(freq_words[i].word);
     }
-    // FIXME: Leaks memory! Use valgrind to find out where that memory is
-    // being allocated, and then insert code here to free it.
 
     ioopm_hash_table_destroy(ht);
 }

@@ -8,6 +8,8 @@
 
 typedef struct entry entry_t;
 
+// ---- Structs ---- //
+
 struct entry
 {
     elem_t value;
@@ -22,6 +24,14 @@ struct list
     int size;
 };
 
+struct list_iterator
+{
+    entry_t *current;
+};
+
+// ---- Linked Lists ---- //
+
+/// @brief Allocates and returns a new linked list entry
 entry_t *entry_create(elem_t value, entry_t *prev, entry_t *next)
 {
     entry_t *entry = calloc(1, sizeof(entry_t));
@@ -33,8 +43,6 @@ entry_t *entry_create(elem_t value, entry_t *prev, entry_t *next)
     return entry;
 }
 
-/// @brief Creates a new empty list
-/// @return an empty linked list
 ioopm_list_t *ioopm_list_create(void)
 {
     ioopm_list_t *list = calloc(1, sizeof(ioopm_list_t));
@@ -50,8 +58,6 @@ ioopm_list_t *ioopm_list_create(void)
     return list;
 }
 
-/// @brief Tear down the linked list and return all its memory (but not the memory of the elements)
-/// @param list the list to be destroyed
 void ioopm_list_destroy(ioopm_list_t *list)
 {
     assert(list != NULL);
@@ -71,9 +77,6 @@ void ioopm_list_destroy(ioopm_list_t *list)
     free(list);
 }
 
-/// @brief Insert at the end of a linked list in O(1) time
-/// @param list the linked list that will be appended
-/// @param value the value to be appended
 void ioopm_list_append(ioopm_list_t *list, elem_t value)
 {
     assert(list != NULL);
@@ -87,9 +90,6 @@ void ioopm_list_append(ioopm_list_t *list, elem_t value)
     list->size += 1;
 }
 
-/// @brief Insert at the front of a linked list in O(1) time
-/// @param list the linked list that will be prepended to
-/// @param value the value to be prepended
 void ioopm_list_prepend(ioopm_list_t *list, elem_t value)
 {
     assert(list != NULL);
@@ -103,9 +103,6 @@ void ioopm_list_prepend(ioopm_list_t *list, elem_t value)
     list->size += 1;
 }
 
-/// @brief Return the first element of a linked list in O(1) time
-/// @pre the list is non-empty
-/// @param list the linked list to take the head of
 elem_t ioopm_list_head(ioopm_list_t *list)
 {
     assert(list != NULL);
@@ -114,9 +111,6 @@ elem_t ioopm_list_head(ioopm_list_t *list)
     return list->vanguard->next->value;
 }
 
-/// @brief Return the last element of a linked list in O(1) time
-/// @pre the list is non-empty
-/// @param list the linked list to take the last element of
 elem_t ioopm_list_last(ioopm_list_t *list)
 {
     assert(list != NULL);
@@ -125,14 +119,6 @@ elem_t ioopm_list_last(ioopm_list_t *list)
     return list->sternguard->prev->value;
 }
 
-/// @brief Insert an element into a linked list in O(n) time.
-/// The valid values of index are [0,n] for a list of n elements,
-/// where 0 means before the firstelement and n means after
-/// the last element.
-/// @pre 0 <= index <= length(list)
-/// @param list the linked list that will be extended
-/// @param index the position in the list
-/// @param value the value to be inserted
 void ioopm_list_insert(ioopm_list_t *list, int index, elem_t value)
 {
     assert(list != NULL);
@@ -172,13 +158,6 @@ void ioopm_list_insert(ioopm_list_t *list, int index, elem_t value)
     list->size += 1;
 }
 
-/// @brief Remove an element from a linked list in O(n) time.
-/// The valid values of index are [0,n-1] for a list of n elements,
-/// where 0 means the first element and n-1 means the last element.
-/// @pre 0 <= index < length(list)
-/// @param list the linked list
-/// @param index the position in the list
-/// @return the value removed
 elem_t ioopm_list_remove(ioopm_list_t *list, int index)
 {
     assert(list != NULL);
@@ -220,13 +199,6 @@ elem_t ioopm_list_remove(ioopm_list_t *list, int index)
     return value;
 }
 
-/// @brief Retrieve an element from a linked list in O(n) time.
-/// The valid values of index are [0,n-1] for a list of n elements,
-/// where 0 means the first element and n-1 means the last element.
-/// @pre 0 <= index < length(list)
-/// @param list the linked list that will be extended
-/// @param index the position in the list
-/// @return the value at the given position
 elem_t ioopm_list_get(ioopm_list_t *list, int index)
 {
     assert(list != NULL);
@@ -259,9 +231,6 @@ elem_t ioopm_list_get(ioopm_list_t *list, int index)
     return current->value;
 }
 
-/// @brief Lookup the number of elements in the linked list in O(1) time
-/// @param list the linked list
-/// @return the number of elements in the list
 int ioopm_list_size(ioopm_list_t *list)
 {
     assert(list != NULL);
@@ -269,9 +238,6 @@ int ioopm_list_size(ioopm_list_t *list)
     return list->size;
 }
 
-/// @brief Test whether a list is empty or not
-/// @param list the linked list
-/// @return true if the number of elements int the list is 0, else false
 bool ioopm_list_is_empty(ioopm_list_t *list)
 {
     assert(list != NULL);
@@ -279,13 +245,8 @@ bool ioopm_list_is_empty(ioopm_list_t *list)
     return ioopm_list_size(list) == 0;
 }
 
-struct list_iterator
-{
-    entry_t *current;
-};
+// ---- Iterator ---- //
 
-/// @brief Create a new iterator
-/// @param l the list to iterate over
 ioopm_list_iterator_t *ioopm_list_iterator_create(ioopm_list_t *l)
 {
     assert(l != NULL);
@@ -296,8 +257,6 @@ ioopm_list_iterator_t *ioopm_list_iterator_create(ioopm_list_t *l)
     return it;
 }
 
-/// @brief Destroy the iterator and return its resources
-/// @param iter the iterator
 void ioopm_list_iterator_destroy(ioopm_list_iterator_t *iter)
 {
     assert(iter != NULL);
@@ -305,9 +264,6 @@ void ioopm_list_iterator_destroy(ioopm_list_iterator_t *iter)
     free(iter);
 }
 
-/// @brief Checks if there are more elements to iterate over
-/// @param iter the iterator
-/// @return true if there is at least one more element
 bool ioopm_list_iterator_at_end(ioopm_list_iterator_t *iter)
 {
     assert(iter != NULL);
@@ -315,8 +271,6 @@ bool ioopm_list_iterator_at_end(ioopm_list_iterator_t *iter)
     return iter->current->next == NULL;
 }
 
-/// @brief Step the iterator forward one step
-/// @param iter the iterator
 void ioopm_list_iterator_advance(ioopm_list_iterator_t *iter)
 {
     assert(iter != NULL);
@@ -324,9 +278,6 @@ void ioopm_list_iterator_advance(ioopm_list_iterator_t *iter)
     iter->current = iter->current->next;
 }
 
-/// @brief Return the current element from the underlying list
-/// @param iter the iterator
-/// @return the current element
 elem_t ioopm_list_iterator_current(ioopm_list_iterator_t *iter)
 {
     assert(iter != NULL);
@@ -334,10 +285,6 @@ elem_t ioopm_list_iterator_current(ioopm_list_iterator_t *iter)
     return iter->current->value;
 }
 
-/// NOTE: REMOVE IS OPTIONAL TO IMPLEMENT
-/// @brief Remove the current element from the underlying list
-/// @param iter the iterator
-/// @return the removed element
 elem_t ioopm_list_iterator_remove(ioopm_list_iterator_t *iter)
 {
     assert(iter != NULL);
@@ -356,10 +303,6 @@ elem_t ioopm_list_iterator_remove(ioopm_list_iterator_t *iter)
     return value;
 }
 
-/// NOTE: INSERT IS OPTIONAL TO IMPLEMENT
-/// @brief Insert a new element into the underlying list making the current element it's next
-/// @param iter the iterator
-/// @param element the element to be inserted
 void ioopm_list_iterator_insert(ioopm_list_iterator_t *iter, elem_t element)
 {
     assert(iter != NULL);
