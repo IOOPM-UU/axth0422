@@ -1,14 +1,22 @@
 #pragma once
+
+/**
+ * @file linked_list.h
+ * @author Axel Thornberg & Isaac Pettersson
+ * @date 2026-09-22
+ * @brief Linked list to store values
+ */
+
 #include <stdbool.h>
 #include "common.h"
 
-typedef struct list ioopm_list_t; /// Meta: struct definition goes in C file
+typedef struct list ioopm_list_t;
 
 /// @brief Creates a new empty list
 /// @return an empty linked list
 ioopm_list_t *ioopm_list_create(void);
 
-/// @brief Tear down the linked list and return all its memory (but not the memory of the elements)
+/// @brief Tear down the linked list and return all its memory
 /// @param list the list to be destroyed
 void ioopm_list_destroy(ioopm_list_t *list);
 
@@ -55,7 +63,7 @@ elem_t ioopm_list_remove(ioopm_list_t *list, int index);
 /// The valid values of index are [0,n-1] for a list of n elements,
 /// where 0 means the first element and n-1 means the last element.
 /// @pre 0 <= index < length(list)
-/// @param list the linked list that will be extended
+/// @param list the linked list that we retrieve from
 /// @param index the position in the list
 /// @return the value at the given position
 elem_t ioopm_list_get(ioopm_list_t *list, int index);
