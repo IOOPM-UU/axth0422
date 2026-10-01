@@ -1,5 +1,5 @@
 BUILD ?= debug
-BASE_FLAGS=-Wall -Wextra -pedantic --coverage -pg
+BASE_FLAGS=-Wall -Wextra -pedantic --coverage
 
 ifeq ($(BUILD), release)
     FLAGS=$(BASE_FLAGS) -O3 -DNDEBUG
