@@ -1,17 +1,10 @@
 BUILD ?= debug
-PG ?= false
 BASE_FLAGS=-Wall -Wextra -pedantic --coverage -pg
 
-ifeq ($(PG), true)
-    PG_FLAGS=$(BASE_FLAGS) -pg
-else
-    PG_FLAGS=$(BASE_FLAGS)
-endif
-
 ifeq ($(BUILD), release)
-    FLAGS=$(PG_FLAGS) -O3 -DNDEBUG
+    FLAGS=$(BASE_FLAGS) -O3 -DNDEBUG
 else
-    FLAGS=$(PG_FLAGS) -O0 -g
+    FLAGS=$(BASE_FLAGS) -O0 -g
 endif
 
 CC=gcc
