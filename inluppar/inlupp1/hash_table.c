@@ -26,13 +26,13 @@ struct hash_table
     entry_t *buckets[No_Buckets];
     ioopm_hash_function *hash_fn;
     ioopm_eq_function *key_eq_fn;
-    int size;
+    size_t size;
 };
 
 struct hash_table_iterator
 {
     ioopm_hash_table_t *ht;
-    int current_bucket;
+    size_t current_bucket;
     entry_t *current_entry;
 };
 
@@ -51,7 +51,7 @@ void ioopm_hash_table_destroy(ioopm_hash_table_t *ht)
 {
     assert(ht != NULL);
 
-    for (int i = 0; i < No_Buckets; i++)
+    for (size_t i = 0; i < No_Buckets; i++)
     {
         entry_t *previous = NULL;
         entry_t *current = ht->buckets[i];
@@ -69,7 +69,7 @@ void ioopm_hash_table_destroy(ioopm_hash_table_t *ht)
 /// @brief Returns a pointer to the previous element or null if the element does not exist
 entry_t **find_previous_entry(ioopm_hash_table_t *ht, elem_t key)
 {
-    int bucket = ht->hash_fn(key) % No_Buckets;
+    size_t bucket = ht->hash_fn(key) % No_Buckets;
 
     entry_t **prev = &ht->buckets[bucket];
 
@@ -99,7 +99,7 @@ void ioopm_hash_table_insert(ioopm_hash_table_t *ht, elem_t key, elem_t value)
 
     if (current == NULL)
     {
-        int bucket = ht->hash_fn(key) % No_Buckets;
+        size_t bucket = ht->hash_fn(key) % No_Buckets;
 
         ht->buckets[bucket] = entry_create(key, value, ht->buckets[bucket]);
 
@@ -156,7 +156,7 @@ bool ioopm_hash_table_has_key(ioopm_hash_table_t *ht, elem_t key)
 {
     assert(ht != NULL);
 
-    int bucket = ht->hash_fn(key) % No_Buckets;
+    size_t bucket = ht->hash_fn(key) % No_Buckets;
 
     entry_t *current = ht->buckets[bucket];
 
@@ -180,7 +180,7 @@ bool ioopm_hash_table_is_empty(ioopm_hash_table_t *ht)
     return ht->size == 0;
 }
 
-int ioopm_hash_table_size(ioopm_hash_table_t *ht)
+size_t ioopm_hash_table_size(ioopm_hash_table_t *ht)
 {
     assert(ht != NULL);
 
@@ -205,7 +205,7 @@ ioopm_hash_table_iterator_t *ioopm_hash_table_iterator_create(ioopm_hash_table_t
 
     it->current_bucket = 0;
 
-    for (int i = 0; i < No_Buckets && ht->buckets[i] == NULL; i++)
+    for (size_t i = 0; i < No_Buckets && ht->buckets[i] == NULL; i++)
     {
         it->current_bucket = i + 1;
     }

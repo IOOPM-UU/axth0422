@@ -5,9 +5,13 @@
  * @author Axel Thornberg & Isaac Pettersson
  * @date 2026-09-14
  * @brief Simple hash table that maps keys to values.
+ * 
+ * Provides an interface for hash tables, for storing data mapped to a key.
+ * 
  */
 
 #include <stdbool.h>
+#include <stddef.h>
 #include "common.h"
 
 typedef struct hash_table ioopm_hash_table_t;
@@ -55,4 +59,4 @@ bool ioopm_hash_table_is_empty(ioopm_hash_table_t *ht);
 /// @brief Checks how many elements are in the hash table
 /// @param ht hash table operated upon
 /// @return the number of elements are in the hash table
-int ioopm_hash_table_size(ioopm_hash_table_t *ht);
+size_t ioopm_hash_table_size(ioopm_hash_table_t *ht);

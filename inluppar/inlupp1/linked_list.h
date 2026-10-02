@@ -5,8 +5,12 @@
  * @author Axel Thornberg & Isaac Pettersson
  * @date 2026-09-22
  * @brief Linked list to store values
+ *
+ * Provides an interface for linked lists, for storing data in a given order.
+ *
  */
 
+#include <stddef.h>
 #include <stdbool.h>
 #include "common.h"
 
@@ -48,7 +52,7 @@ elem_t ioopm_list_last(ioopm_list_t *list);
 /// @param list the linked list that will be extended
 /// @param index the position in the list
 /// @param value the value to be inserted
-void ioopm_list_insert(ioopm_list_t *list, int index, elem_t value);
+void ioopm_list_insert(ioopm_list_t *list, size_t index, elem_t value);
 
 /// @brief Remove an element from a linked list in O(n) time.
 /// The valid values of index are [0,n-1] for a list of n elements,
@@ -57,7 +61,7 @@ void ioopm_list_insert(ioopm_list_t *list, int index, elem_t value);
 /// @param list the linked list
 /// @param index the position in the list
 /// @return the value removed
-elem_t ioopm_list_remove(ioopm_list_t *list, int index);
+elem_t ioopm_list_remove(ioopm_list_t *list, size_t index);
 
 /// @brief Retrieve an element from a linked list in O(n) time.
 /// The valid values of index are [0,n-1] for a list of n elements,
@@ -66,12 +70,12 @@ elem_t ioopm_list_remove(ioopm_list_t *list, int index);
 /// @param list the linked list that we retrieve from
 /// @param index the position in the list
 /// @return the value at the given position
-elem_t ioopm_list_get(ioopm_list_t *list, int index);
+elem_t ioopm_list_get(ioopm_list_t *list, size_t index);
 
 /// @brief Lookup the number of elements in the linked list in O(1) time
 /// @param list the linked list
 /// @return the number of elements in the list
-int ioopm_list_size(ioopm_list_t *list);
+size_t ioopm_list_size(ioopm_list_t *list);
 
 /// @brief Test whether a list is empty or not
 /// @param list the linked list

@@ -5,6 +5,11 @@
  * @author Axel Thornberg & Isaac Pettersson
  * @date 2026-09-24
  * @brief Iterator to operate on linked lists
+ * 
+ * Linked list iterators provide an interface to iterate through all entries in a linked list.
+ * An iterator is either positioned at an entry, called the current entry, or it is positioned at-the-end, if it has already iterated through all entries.
+ * If the underlying linked list of an iterator is modified using any non-iterator function, the iterator is invalidated and should not be used anymore.
+ * 
  */
 
 #include <stdbool.h>

@@ -14,7 +14,7 @@ GCDA_OBJECTS=hash_table.gcda linked_list.gcda
 all:
 	make tests.test.out
 	make freq_count.out
-	rm -f *.gcda *.gcno *.o *.gcov
+	rm -f *.gcda *.gcno *.gcov
 
 %.o: %.c
 	$(CC) $(FLAGS) -c $< -o $@
@@ -33,4 +33,5 @@ test: tests.test.out
 clean:
 	rm -f *.gcda *.gcno *.out *.o *.gcov
 
+.PRECIOUS: %.o
 .PHONY: all test clean

@@ -5,15 +5,18 @@
  * @author Axel Thornberg & Isaac Pettersson
  * @date 2026-09-27
  * @brief Types and structs to allow any element to be stored
+ *
+ * Provides an interface for generic data types.
+ *
  */
 
 #include <stdbool.h>
 #include <stddef.h>
 
-#define int_elem(x)   ((elem_t) { .i = (x) })
-#define bool_elem(x)  ((elem_t) { .b = (x) })
-#define ptr_elem(x)   ((elem_t) { .p = (x) })
-#define string_elem(x) ((elem_t) { .s = (x) })
+#define int_elem(x) ((elem_t){.i = (x)})
+#define bool_elem(x) ((elem_t){.b = (x)})
+#define ptr_elem(x) ((elem_t){.p = (x)})
+#define string_elem(x) ((elem_t){.s = (x)})
 
 typedef union elem elem_t;
 

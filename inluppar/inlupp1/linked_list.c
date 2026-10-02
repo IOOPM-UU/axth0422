@@ -21,7 +21,7 @@ struct list
 {
     entry_t *vanguard;   // Sentinel at the start
     entry_t *sternguard; // Sentinel at the end
-    int size;
+    size_t size;
 };
 
 struct list_iterator
@@ -62,12 +62,12 @@ void ioopm_list_destroy(ioopm_list_t *list)
 {
     assert(list != NULL);
 
-    int size = ioopm_list_size(list);
+    size_t size = ioopm_list_size(list);
 
     entry_t *current = list->vanguard;
     entry_t *next;
 
-    for (int i = 0; i < size + 2; i++)
+    for (size_t i = 0; i < size + 2; i++)
     {
         next = current->next;
         free(current);
@@ -119,13 +119,12 @@ elem_t ioopm_list_last(ioopm_list_t *list)
     return list->sternguard->prev->value;
 }
 
-void ioopm_list_insert(ioopm_list_t *list, int index, elem_t value)
+void ioopm_list_insert(ioopm_list_t *list, size_t index, elem_t value)
 {
     assert(list != NULL);
-    assert(index >= 0);
     assert(index <= ioopm_list_size(list));
 
-    int size = ioopm_list_size(list);
+    size_t size = ioopm_list_size(list);
 
     entry_t *entry;
 
@@ -133,7 +132,7 @@ void ioopm_list_insert(ioopm_list_t *list, int index, elem_t value)
     {
         entry_t *current = list->vanguard->next;
 
-        for (int i = 0; i < index; i++)
+        for (size_t i = 0; i < index; i++)
         {
             current = current->next;
         }
@@ -144,7 +143,7 @@ void ioopm_list_insert(ioopm_list_t *list, int index, elem_t value)
     {
         entry_t *current = list->sternguard->prev;
 
-        for (int i = size; i > index; i--)
+        for (size_t i = size; i > index; i--)
         {
             current = current->prev;
         }
@@ -158,13 +157,12 @@ void ioopm_list_insert(ioopm_list_t *list, int index, elem_t value)
     list->size += 1;
 }
 
-elem_t ioopm_list_remove(ioopm_list_t *list, int index)
+elem_t ioopm_list_remove(ioopm_list_t *list, size_t index)
 {
     assert(list != NULL);
-    assert(index >= 0);
     assert(index < ioopm_list_size(list));
 
-    int size = ioopm_list_size(list);
+    size_t size = ioopm_list_size(list);
 
     entry_t *current;
 
@@ -172,7 +170,7 @@ elem_t ioopm_list_remove(ioopm_list_t *list, int index)
     {
         current = list->vanguard->next;
 
-        for (int i = 0; i < index; i++)
+        for (size_t i = 0; i < index; i++)
         {
             current = current->next;
         }
@@ -181,7 +179,7 @@ elem_t ioopm_list_remove(ioopm_list_t *list, int index)
     {
         current = list->sternguard->prev;
 
-        for (int i = size - 1; i > index; i--)
+        for (size_t i = size - 1; i > index; i--)
         {
             current = current->prev;
         }
@@ -199,13 +197,12 @@ elem_t ioopm_list_remove(ioopm_list_t *list, int index)
     return value;
 }
 
-elem_t ioopm_list_get(ioopm_list_t *list, int index)
+elem_t ioopm_list_get(ioopm_list_t *list, size_t index)
 {
     assert(list != NULL);
-    assert(index >= 0);
     assert(index < ioopm_list_size(list));
 
-    int size = ioopm_list_size(list);
+    size_t size = ioopm_list_size(list);
 
     entry_t *current;
 
@@ -213,7 +210,7 @@ elem_t ioopm_list_get(ioopm_list_t *list, int index)
     {
         current = list->vanguard->next;
 
-        for (int i = 0; i < index; i++)
+        for (size_t i = 0; i < index; i++)
         {
             current = current->next;
         }
@@ -222,7 +219,7 @@ elem_t ioopm_list_get(ioopm_list_t *list, int index)
     {
         current = list->sternguard->prev;
 
-        for (int i = size - 1; i > index; i--)
+        for (size_t i = size - 1; i > index; i--)
         {
             current = current->prev;
         }
@@ -231,7 +228,7 @@ elem_t ioopm_list_get(ioopm_list_t *list, int index)
     return current->value;
 }
 
-int ioopm_list_size(ioopm_list_t *list)
+size_t ioopm_list_size(ioopm_list_t *list)
 {
     assert(list != NULL);
 
