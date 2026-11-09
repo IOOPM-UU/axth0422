@@ -1,3 +1,5 @@
+package labbar.lab6;
+
 import java.util.Scanner;
 
 public class Die {
@@ -22,7 +24,7 @@ public class Die {
     }
 
     public String toString() {
-        return "Die(" + value + ")";
+        return "Die(%d)".formatted(this.value);
     }
 
     boolean equals(Die otherDie) {

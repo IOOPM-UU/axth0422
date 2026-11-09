@@ -1,3 +1,5 @@
+package labbar.lab6;
+
 public class PairOfDice {
     private Die die1;
     private Die die2;
@@ -19,8 +21,16 @@ public class PairOfDice {
         return die2.get();
     }
 
-    public String ToString()
-    {
-        return "PairOfDice(" + die1 + ", " + die2 + ")";
+    public String toString() {
+        return "PairOfDice(%s, %s)".formatted(die1, die2);
+    }
+
+    public static void main(String[] args) {
+        PairOfDice pod = new PairOfDice(20);
+
+        System.out.println(pod.roll());
+        System.out.println(pod.getDie1());
+        System.out.println(pod.getDie2());
+        System.out.println(pod);
     }
 }
