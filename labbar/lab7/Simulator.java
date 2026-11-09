@@ -33,11 +33,11 @@ class Customer {
 
 class Register {
     private boolean open;
-    private Queue queue;
+    private Queue<Customer> queue;
 
     public Register() {
         open = false;
-        queue = new Queue();
+        queue = new Queue<Customer>();
     }
 
     public void open() {
@@ -90,26 +90,26 @@ class Register {
     }
 }
 
-class Queue {
-    class Node {
-        public Customer element;
-        public Node next;
-        public Node prev;
+class Queue<T> {
+    class Node<A> {
+        public A element;
+        public Node<A> next;
+        public Node<A> prev;
 
-        public Node(Node prev, Node next, Customer element) {
+        public Node(Node<A> prev, Node<A> next, A element) {
             this.prev = prev;
             this.next = next;
             this.element = element;
         }
     }
 
-    private Node vanguard;
-    private Node sternguard;
+    private Node<T> vanguard;
+    private Node<T> sternguard;
     private int length;
 
     public Queue() {
-        this.vanguard = new Node(null, sternguard, null);
-        this.sternguard = new Node(vanguard, null, null);
+        this.vanguard = new Node<T>(null, sternguard, null);
+        this.sternguard = new Node<T>(vanguard, null, null);
         this.length = 0;
     }
 
@@ -117,8 +117,8 @@ class Queue {
         return this.length;
     }
 
-    public void enqueue(Customer c) {
-        Node node = new Node(sternguard.prev, sternguard, c);
+    public void enqueue(T c) {
+        Node<T> node = new Node<T>(sternguard.prev, sternguard, c);
         sternguard.prev.next = node;
         sternguard.prev = node;
 
@@ -126,8 +126,8 @@ class Queue {
 
     }
 
-    public Customer dequeue() {
-        Node node = vanguard.next;
+    public T dequeue() {
+        Node<T> node = vanguard.next;
 
         node.next.prev = vanguard;
         vanguard.next = node.next;
@@ -137,7 +137,7 @@ class Queue {
         return node.element;
     }
 
-    public Customer first() {
+    public T first() {
         return vanguard.next.element;
     }
 
